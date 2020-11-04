@@ -9,7 +9,7 @@
 3. `/middlewares` — папка для контроля приложения
 4. `/models` — папка с схемами пользователя и статьи  
 5. `/routes` — папка с файлами роутера
-6. `/congig` — папка конфигурации 
+6. `/config` — папка конфигурации 
   
 ## Запуск проекта
 
@@ -22,5 +22,5 @@
 
 ## Домен для обращения к API
 
-https://api.news.students.nomoreparties.xyz
-http://api.news.students.nomoreparties.xyz
+- https://api.news.students.nomoreparties.xyz
+- http://api.news.students.nomoreparties.xyz
