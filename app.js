@@ -1,34 +1,28 @@
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
+const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const { celebrate, Joi, errors } = require('celebrate');
-const requestLimit = require('express-rate-limit');
-const usersRouters = require('./routes/users.js');
-const articleRouters = require('./routes/article.js');
-const error = require('./routes/error.js');
+const { errors } = require('celebrate');
 const { requestLogger, errorLogger } = require('./middlewares/logger.js');
-const { login, createUser } = require('./controllers/users.js');
-const auth = require('./middlewares/auth.js');
+const { URL_DB } = require('./config/addressMongodb');
+const router = require('./routes/index.js');
+const limit = require('./config/requestLimit.js');
 
 const { PORT = 3000 } = process.env;
 
 const app = express();
 
+app.use(helmet());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // подключаемся к серверу mongo
-mongoose.connect('mongodb://localhost:27017/mestodb', {
+mongoose.connect(URL_DB, {
   useNewUrlParser: true,
   useCreateIndex: true,
   useFindAndModify: false,
-});
-
-const limit = requestLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
 });
 
 // подключаем cors
@@ -40,28 +34,8 @@ app.use(limit);
 // подключение логгера запросов
 app.use(requestLogger);
 
-app.post('/signin', celebrate({
-  body: Joi.object().keys({
-    email: Joi.string().required().email(),
-    password: Joi.string().required().min(10).pattern(/^\S+$/),
-  }),
-}), login);
-
-app.post('/signup', celebrate({
-  body: Joi.object().keys({
-    email: Joi.string().required().email(),
-    password: Joi.string().required().min(10).pattern(/^\S+$/),
-    name: Joi.string().min(2).max(30),
-  }).unknown(true),
-}), createUser);
-
-app.use(auth);
-
-app.use('/', usersRouters);
-app.use('/', articleRouters);
-
-// отправляем ошибку, если ресурса не сушествует
-app.use('*', error);
+// подключаем все роуты
+app.use('/', router);
 
 // подключаем логгер ошибок
 app.use(errorLogger);

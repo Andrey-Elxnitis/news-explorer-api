@@ -13,7 +13,10 @@ const getUser = (req, res, next) => {
       if (user === null) {
         throw new NotFoundErr({ message: `Упс, пользователя с таким id ${req.user._id} не существует` });
       }
-      res.status(200).send({ email: user.email, name: user.name });
+      res.status(200).send({
+        email: user.email,
+        name: user.name,
+      });
     })
     .catch(next);
 };
