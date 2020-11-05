@@ -9,6 +9,7 @@ const { requestLogger, errorLogger } = require('./middlewares/logger.js');
 const { URL_DB } = require('./config/addressMongodb');
 const router = require('./routes/index.js');
 const limit = require('./config/requestLimit.js');
+const errorHandler = require('./middlewares/errorHandler.js');
 
 const { PORT = 3000 } = process.env;
 
@@ -44,14 +45,7 @@ app.use(errorLogger);
 app.use(errors());
 
 // подключаем централизованную обработку ошибок
-app.use((err, req, res, next) => {
-  if (err.status) {
-    res.status(err.status).send({ message: err.message });
-    return;
-  }
-  res.status(500).send({ message: `К сожалению на сервере произошла ошибка: ${err.message}` });
-  next();
-});
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`Мы слушаем порт: ${PORT}`);
