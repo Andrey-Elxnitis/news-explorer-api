@@ -18,9 +18,9 @@
 
 ## Публичный IP-адрес
 
-178.154.227.106
+178.154.226.12
 
 ## Домен для обращения к API
 
-- https://api.news.students.nomoreparties.xyz
-- http://api.news.students.nomoreparties.xyz
+- https://api.newsnw.students.nomoreparties.xyz
+- http://api.newsnw.students.nomoreparties.xyz
